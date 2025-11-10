@@ -3,7 +3,8 @@ from os import getenv
 
 from aiogram import Bot, Dispatcher
 
-TOKEN = getenv("BOT_TOKEN")
+from config import TOKEN
+
 dp = Dispatcher()
 
 
