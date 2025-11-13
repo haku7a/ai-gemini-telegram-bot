@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = getenv("BOT_TOKEN")
+GEMINI_API_KEY = getenv("GEMINI_API_KEY")
 
 ALLOWED_USER_IDS_STR = getenv("ALLOWED_USER_IDS")
 ALLOWED_USER_IDS = (
