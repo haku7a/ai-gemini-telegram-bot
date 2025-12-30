@@ -1,14 +1,27 @@
-from os import getenv
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import SecretStr, field_validator
+from typing import List
 
-load_dotenv()
 
-TOKEN = getenv("BOT_TOKEN")
-GEMINI_API_KEY = getenv("GEMINI_API_KEY")
+class Settings(BaseSettings):
 
-ALLOWED_USER_IDS_STR = getenv("ALLOWED_USER_IDS")
-ALLOWED_USER_IDS = (
-    [int(allowed_user_id) for allowed_user_id in ALLOWED_USER_IDS_STR.split(",")]
-    if ALLOWED_USER_IDS_STR
-    else []
-)
+    BOT_TOKEN: SecretStr
+    GEMINI_API_KEY: SecretStr
+    ALLOWED_USER_IDS: List[int]
+
+    @field_validator("ALLOWED_USER_IDS", mode="before")
+    @classmethod
+    def parse_allowed_user_ids(cls, v):
+        if isinstance(v, int):
+            return [v]
+        if isinstance(v, str):
+            return [int(id_.strip()) for id_ in v.split(",") if id_.strip()]
+        return v
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
+
+
+config = Settings()
