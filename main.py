@@ -16,7 +16,7 @@ async def main() -> None:
     dp.include_router(main_router)
 
     bot = Bot(token=config.BOT_TOKEN.get_secret_value())
-    await dp.start_polling(bot)
+    await dp.start_polling(bot, config=config)
 
 
 if __name__ == "__main__":
