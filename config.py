@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: SecretStr
     ALLOWED_USER_IDS: List[int]
 
+    GEMINI_MODEL: str = "gemini-flash-latest"
+
     @field_validator("ALLOWED_USER_IDS", mode="before")
     @classmethod
     def parse_allowed_user_ids(cls, v):
