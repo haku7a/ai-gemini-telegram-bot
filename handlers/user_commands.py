@@ -1,4 +1,4 @@
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 from aiogram import Router, F
 from aiogram.enums import ParseMode
@@ -18,11 +18,15 @@ async def command_start_handler(message: Message) -> None:
 
 
 @router.message(Command("search"))
-async def search_handler(message: Message, gemini: GeminiService):
+async def search_handler(
+    message: Message, command: CommandObject, gemini: GeminiService
+):
     await message.bot.send_chat_action(message.chat.id, "typing")
 
     response = await gemini.generate(
-        prompt=message.text, config=GenerationPresets.google_search()
+        prompt=message.text,
+        user_id=message.from_user.id,
+        config=GenerationPresets.google_search(),
     )
 
     await message.answer(response)
@@ -30,6 +34,7 @@ async def search_handler(message: Message, gemini: GeminiService):
 
 @router.message(F.text)
 async def chat_handler(message: Message, gemini: GeminiService):
-    """Обычное общение"""
-    response = await gemini.generate(message.text)
+    await message.bot.send_chat_action(message.chat.id, "typing")
+
+    response = await gemini.generate(prompt=message.text, user_id=message.from_user.id)
     await message.answer(response)
